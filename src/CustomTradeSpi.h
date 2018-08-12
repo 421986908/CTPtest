@@ -1,72 +1,72 @@
-#pragma once
-// ---- ÅÉÉúµÄ½»Ò×Àà ---- //
-#include "CTP_API/ThostFtdcTraderApi.h"
+ï»¿#pragma once
+// ---- æ´¾ç”Ÿçš„äº¤æ˜“ç±» ---- //
+#include "ThostFtdcTraderApi.h"
 
 class CustomTradeSpi : public CThostFtdcTraderSpi
 {
-// ---- ctp_api²¿·Ö»Øµ÷½Ó¿Ú ---- //
+// ---- ctp_apiéƒ¨åˆ†å›è°ƒæ¥å£ ---- //
 public:
-	///µ±¿Í»§¶ËÓë½»Ò×ºóÌ¨½¨Á¢ÆğÍ¨ĞÅÁ¬½ÓÊ±£¨»¹Î´µÇÂ¼Ç°£©£¬¸Ã·½·¨±»µ÷ÓÃ¡£
+	///å½“å®¢æˆ·ç«¯ä¸äº¤æ˜“åå°å»ºç«‹èµ·é€šä¿¡è¿æ¥æ—¶ï¼ˆè¿˜æœªç™»å½•å‰ï¼‰ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨ã€‚
 	void OnFrontConnected();
 
-	///µÇÂ¼ÇëÇóÏìÓ¦
+	///ç™»å½•è¯·æ±‚å“åº”
 	void OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///´íÎóÓ¦´ğ
+	///é”™è¯¯åº”ç­”
 	void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///µ±¿Í»§¶ËÓë½»Ò×ºóÌ¨Í¨ĞÅÁ¬½Ó¶Ï¿ªÊ±£¬¸Ã·½·¨±»µ÷ÓÃ¡£µ±·¢ÉúÕâ¸öÇé¿öºó£¬API»á×Ô¶¯ÖØĞÂÁ¬½Ó£¬¿Í»§¶Ë¿É²»×ö´¦Àí¡£
+	///å½“å®¢æˆ·ç«¯ä¸äº¤æ˜“åå°é€šä¿¡è¿æ¥æ–­å¼€æ—¶ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨ã€‚å½“å‘ç”Ÿè¿™ä¸ªæƒ…å†µåï¼ŒAPIä¼šè‡ªåŠ¨é‡æ–°è¿æ¥ï¼Œå®¢æˆ·ç«¯å¯ä¸åšå¤„ç†ã€‚
 	void OnFrontDisconnected(int nReason);
 
-	///ĞÄÌø³¬Ê±¾¯¸æ¡£µ±³¤Ê±¼äÎ´ÊÕµ½±¨ÎÄÊ±£¬¸Ã·½·¨±»µ÷ÓÃ¡£
+	///å¿ƒè·³è¶…æ—¶è­¦å‘Šã€‚å½“é•¿æ—¶é—´æœªæ”¶åˆ°æŠ¥æ–‡æ—¶ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨ã€‚
 	void OnHeartBeatWarning(int nTimeLapse);
 
-	///µÇ³öÇëÇóÏìÓ¦
+	///ç™»å‡ºè¯·æ±‚å“åº”
 	void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///Í¶×ÊÕß½áËã½á¹ûÈ·ÈÏÏìÓ¦
+	///æŠ•èµ„è€…ç»“ç®—ç»“æœç¡®è®¤å“åº”
 	void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///ÇëÇó²éÑ¯ºÏÔ¼ÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢åˆçº¦å“åº”
 	void OnRspQryInstrument(CThostFtdcInstrumentField *pInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///ÇëÇó²éÑ¯×Ê½ğÕË»§ÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢èµ„é‡‘è´¦æˆ·å“åº”
 	void OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“å“åº”
 	void OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInvestorPosition, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///±¨µ¥Â¼ÈëÇëÇóÏìÓ¦
+	///æŠ¥å•å½•å…¥è¯·æ±‚å“åº”
 	void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///±¨µ¥²Ù×÷ÇëÇóÏìÓ¦
+	///æŠ¥å•æ“ä½œè¯·æ±‚å“åº”
 	void OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-	///±¨µ¥Í¨Öª
+	///æŠ¥å•é€šçŸ¥
 	void OnRtnOrder(CThostFtdcOrderField *pOrder);
 
-	///³É½»Í¨Öª
+	///æˆäº¤é€šçŸ¥
 	void OnRtnTrade(CThostFtdcTradeField *pTrade);
 	
-// ---- ×Ô¶¨Òåº¯Êı ---- //
+// ---- è‡ªå®šä¹‰å‡½æ•° ---- //
 public:
-	bool loginFlag; // µÇÂ½³É¹¦µÄ±êÊ¶
+	bool loginFlag; // ç™»é™†æˆåŠŸçš„æ ‡è¯†
 	void reqOrderInsert(
 		TThostFtdcInstrumentIDType instrumentID,
 		TThostFtdcPriceType price,
 		TThostFtdcVolumeType volume,
-		TThostFtdcDirectionType direction); // ¸öĞÔ»¯±¨µ¥Â¼Èë£¬Íâ²¿µ÷ÓÃ
+		TThostFtdcDirectionType direction); // ä¸ªæ€§åŒ–æŠ¥å•å½•å…¥ï¼Œå¤–éƒ¨è°ƒç”¨
 private:
-	void reqUserLogin(); // µÇÂ¼ÇëÇó
-	void reqUserLogout(); // µÇ³öÇëÇó
-	void reqSettlementInfoConfirm(); // Í¶×ÊÕß½á¹ûÈ·ÈÏ
-	void reqQueryInstrument(); // ÇëÇó²éÑ¯ºÏÔ¼
-	void reqQueryTradingAccount(); // ÇëÇó²éÑ¯×Ê½ğÕÊ»§
-	void reqQueryInvestorPosition(); // ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö
-	void reqOrderInsert(); // ÇëÇó±¨µ¥Â¼Èë
+	void reqUserLogin(); // ç™»å½•è¯·æ±‚
+	void reqUserLogout(); // ç™»å‡ºè¯·æ±‚
+	void reqSettlementInfoConfirm(); // æŠ•èµ„è€…ç»“æœç¡®è®¤
+	void reqQueryInstrument(); // è¯·æ±‚æŸ¥è¯¢åˆçº¦
+	void reqQueryTradingAccount(); // è¯·æ±‚æŸ¥è¯¢èµ„é‡‘å¸æˆ·
+	void reqQueryInvestorPosition(); // è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“
+	void reqOrderInsert(); // è¯·æ±‚æŠ¥å•å½•å…¥
 	
-	void reqOrderAction(CThostFtdcOrderField *pOrder); // ÇëÇó±¨µ¥²Ù×÷
-	bool isErrorRspInfo(CThostFtdcRspInfoField *pRspInfo); // ÊÇ·ñÊÕµ½´íÎóĞÅÏ¢
-	bool isMyOrder(CThostFtdcOrderField *pOrder); // ÊÇ·ñÎÒµÄ±¨µ¥»Ø±¨
-	bool isTradingOrder(CThostFtdcOrderField *pOrder); // ÊÇ·ñÕıÔÚ½»Ò×µÄ±¨µ¥
+	void reqOrderAction(CThostFtdcOrderField *pOrder); // è¯·æ±‚æŠ¥å•æ“ä½œ
+	bool isErrorRspInfo(CThostFtdcRspInfoField *pRspInfo); // æ˜¯å¦æ”¶åˆ°é”™è¯¯ä¿¡æ¯
+	bool isMyOrder(CThostFtdcOrderField *pOrder); // æ˜¯å¦æˆ‘çš„æŠ¥å•å›æŠ¥
+	bool isTradingOrder(CThostFtdcOrderField *pOrder); // æ˜¯å¦æ­£åœ¨äº¤æ˜“çš„æŠ¥å•
 };

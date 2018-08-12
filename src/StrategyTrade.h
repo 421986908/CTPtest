@@ -1,8 +1,8 @@
-#pragma once
-// ---- ¼òµ¥²ßÂÔ½»Ò×µÄÀà ---- //
+ï»¿#pragma once
+// ---- ç®€å•ç­–ç•¥äº¤æ˜“çš„ç±» ---- //
 
 #include <functional>
-#include "CTP_API/ThostFtdcUserApiStruct.h"
+#include "ThostFtdcUserApiStruct.h"
 #include "TickToKlineHelper.h"
 #include "CustomTradeSpi.h"
 

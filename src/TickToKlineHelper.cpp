@@ -1,40 +1,40 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <algorithm>
-#include "CTP_API/ThostFtdcUserApiStruct.h"
+#include "ThostFtdcUserApiStruct.h"
 #include "TickToKlineHelper.h"
 
-const int kDataLineNum = 2 * 60; // 1·ÖÖÓkÏßËùĞèĞĞÊı(Ä©Î²²»×ãÒ»·ÖÖÓµÄÉáÈ¥ÁË)
+const int kDataLineNum = 2 * 60; // 1åˆ†é’Ÿkçº¿æ‰€éœ€è¡Œæ•°(æœ«å°¾ä¸è¶³ä¸€åˆ†é’Ÿçš„èˆå»äº†)
 
 void TickToKlineHelper::KLineFromLocalData(const std::string &sFilePath, const std::string &dFilePath)
 {
-	// ÏÈÇåÀí²ĞÁôÊı¾İ
+	// å…ˆæ¸…ç†æ®‹ç•™æ•°æ®
 	m_priceVec.clear();
 	m_volumeVec.clear();
 	m_KLineDataArray.clear();
 
-	std::cout << "¿ªÊ¼×ª»»tickµ½kÏß..." << std::endl;
-	// Ä¬ÈÏ¶ÁÈ¡µÄtickÊı¾İ±íÓĞ4¸ö×Ö¶Î£ººÏÔ¼´úÂë¡¢¸üĞÂÊ±¼ä¡¢×îĞÂ¼Û¡¢³É½»Á¿
+	std::cout << "å¼€å§‹è½¬æ¢tickåˆ°kçº¿..." << std::endl;
+	// é»˜è®¤è¯»å–çš„tickæ•°æ®è¡¨æœ‰4ä¸ªå­—æ®µï¼šåˆçº¦ä»£ç ã€æ›´æ–°æ—¶é—´ã€æœ€æ–°ä»·ã€æˆäº¤é‡
 	std::ifstream srcInFile;
 	std::ofstream dstOutFile;
 	srcInFile.open(sFilePath, std::ios::in);
 	dstOutFile.open(dFilePath, std::ios::out);
-	dstOutFile << "¿ªÅÌ¼Û" << ','
-		<< "×î¸ß¼Û" << ','
-		<< "×îµÍ¼Û" << ','
-		<< "ÊÕÅÌ¼Û" << ',' 
-		<< "³É½»Á¿" << std::endl;
+	dstOutFile << "å¼€ç›˜ä»·" << ','
+		<< "æœ€é«˜ä»·" << ','
+		<< "æœ€ä½ä»·" << ','
+		<< "æ”¶ç›˜ä»·" << ',' 
+		<< "æˆäº¤é‡" << std::endl;
 
-	// Ò»±é½âÎöÎÄ¼şÒ»±ß¼ÆËãkÏßÊı¾İ£¬1·ÖÖÓkÏßÃ¿´Î¶ÁÈ¡60 * 2 = 120ĞĞÊı¾İ
+	// ä¸€éè§£ææ–‡ä»¶ä¸€è¾¹è®¡ç®—kçº¿æ•°æ®ï¼Œ1åˆ†é’Ÿkçº¿æ¯æ¬¡è¯»å–60 * 2 = 120è¡Œæ•°æ®
 	std::string lineStr;
 	bool isFirstLine = true;
 	while (std::getline(srcInFile, lineStr))
 	{
 		if (isFirstLine)
 		{
-			// Ìø¹ıµÚÒ»ĞĞ±íÍ·
+			// è·³è¿‡ç¬¬ä¸€è¡Œè¡¨å¤´
 			isFirstLine = false;
 			continue;
 		}
@@ -53,7 +53,7 @@ void TickToKlineHelper::KLineFromLocalData(const std::string &sFilePath, const s
 			}
 		}
 
-		// ¼ÆËãkÏß
+		// è®¡ç®—kçº¿
 
 		if (m_priceVec.size() == kDataLineNum)
 		{
@@ -62,9 +62,9 @@ void TickToKlineHelper::KLineFromLocalData(const std::string &sFilePath, const s
 			k_line_data.high_price = *std::max_element(m_priceVec.cbegin(), m_priceVec.cend());
 			k_line_data.low_price = *std::min_element(m_priceVec.cbegin(), m_priceVec.cend());
 			k_line_data.close_price = m_priceVec.back();
-			// ³É½»Á¿µÄÕæÊµµÄËã·¨ÊÇµ±Ç°Çø¼ä×îºóÒ»¸ö³É½»Á¿¼õÈ¥ÉÏÈ¥Ò»¸öÇø¼ä×îºóÒ»¸ö³É½»Á¿
+			// æˆäº¤é‡çš„çœŸå®çš„ç®—æ³•æ˜¯å½“å‰åŒºé—´æœ€åä¸€ä¸ªæˆäº¤é‡å‡å»ä¸Šå»ä¸€ä¸ªåŒºé—´æœ€åä¸€ä¸ªæˆäº¤é‡
 			k_line_data.volume = m_volumeVec.back() - m_volumeVec.front(); 
-			//m_KLineDataArray.push_back(k_line_data); // ´Ë´¦¿ÉÒÔ´æµ½ÄÚ´æ
+			//m_KLineDataArray.push_back(k_line_data); // æ­¤å¤„å¯ä»¥å­˜åˆ°å†…å­˜
 			
 			dstOutFile << k_line_data.open_price << ','
 				<< k_line_data.high_price << ','
@@ -80,7 +80,7 @@ void TickToKlineHelper::KLineFromLocalData(const std::string &sFilePath, const s
 	srcInFile.close();
 	dstOutFile.close();
 
-	std::cout << "kÏßÉú³É³É¹¦" << std::endl;
+	std::cout << "kçº¿ç”ŸæˆæˆåŠŸ" << std::endl;
 }
 
 void TickToKlineHelper::KLineFromRealtimeData(CThostFtdcDepthMarketDataField *pDepthMarketData)
@@ -94,9 +94,9 @@ void TickToKlineHelper::KLineFromRealtimeData(CThostFtdcDepthMarketDataField *pD
 		k_line_data.high_price = *std::max_element(m_priceVec.cbegin(), m_priceVec.cend());
 		k_line_data.low_price = *std::min_element(m_priceVec.cbegin(), m_priceVec.cend());
 		k_line_data.close_price = m_priceVec.back();
-		// ³É½»Á¿µÄÕæÊµµÄËã·¨ÊÇµ±Ç°Çø¼ä×îºóÒ»¸ö³É½»Á¿¼õÈ¥ÉÏÈ¥Ò»¸öÇø¼ä×îºóÒ»¸ö³É½»Á¿
+		// æˆäº¤é‡çš„çœŸå®çš„ç®—æ³•æ˜¯å½“å‰åŒºé—´æœ€åä¸€ä¸ªæˆäº¤é‡å‡å»ä¸Šå»ä¸€ä¸ªåŒºé—´æœ€åä¸€ä¸ªæˆäº¤é‡
 		k_line_data.volume = m_volumeVec.back() - m_volumeVec.front();
-		m_KLineDataArray.push_back(k_line_data); // ´Ë´¦¿ÉÒÔ´æµ½ÄÚ´æ
+		m_KLineDataArray.push_back(k_line_data); // æ­¤å¤„å¯ä»¥å­˜åˆ°å†…å­˜
 
 		m_priceVec.clear();
 		m_volumeVec.clear();
