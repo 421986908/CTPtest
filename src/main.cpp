@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <stdio.h>
 #include <string>
 #include <unordered_map>
@@ -8,61 +8,61 @@
 
 using namespace std;
 
-// Á´½Ó¿â
+// é“¾æ¥åº“
 #pragma comment (lib, "thostmduserapi.lib")
 #pragma comment (lib, "thosttraderapi.lib")
 
-// ---- È«¾Ö±äÁ¿ ---- //
-// ¹«¹²²ÎÊı
-TThostFtdcBrokerIDType gBrokerID = "9999";                         // Ä£Äâ¾­¼ÍÉÌ´úÂë
-TThostFtdcInvestorIDType gInvesterID = "";                         // Í¶×ÊÕßÕË»§Ãû
-TThostFtdcPasswordType gInvesterPassword = "";                     // Í¶×ÊÕßÃÜÂë
+// ---- å…¨å±€å˜é‡ ---- //
+// å…¬å…±å‚æ•°
+TThostFtdcBrokerIDType gBrokerID = "9999";                         // æ¨¡æ‹Ÿç»çºªå•†ä»£ç 
+TThostFtdcInvestorIDType gInvesterID = "";                         // æŠ•èµ„è€…è´¦æˆ·å
+TThostFtdcPasswordType gInvesterPassword = "";                     // æŠ•èµ„è€…å¯†ç 
 
-// ĞĞÇé²ÎÊı
-CThostFtdcMdApi *g_pMdUserApi = nullptr;                           // ĞĞÇéÖ¸Õë
-char gMdFrontAddr[] = "tcp://180.168.146.187:10010";               // Ä£ÄâĞĞÇéÇ°ÖÃµØÖ·
-char *g_pInstrumentID[] = {"TF1706", "zn1705", "cs1801", "CF705"}; // ĞĞÇéºÏÔ¼´úÂëÁĞ±í£¬ÖĞ¡¢ÉÏ¡¢´ó¡¢Ö£½»Ò×Ëù¸÷Ñ¡Ò»ÖÖ
-int instrumentNum = 4;                                             // ĞĞÇéºÏÔ¼¶©ÔÄÊıÁ¿
-unordered_map<string, TickToKlineHelper> g_KlineHash;              // ²»Í¬ºÏÔ¼µÄkÏß´æ´¢±í
+// è¡Œæƒ…å‚æ•°
+CThostFtdcMdApi *g_pMdUserApi = nullptr;                           // è¡Œæƒ…æŒ‡é’ˆ
+char gMdFrontAddr[] = "tcp://180.168.146.187:10010";               // æ¨¡æ‹Ÿè¡Œæƒ…å‰ç½®åœ°å€
+const char *g_pInstrumentID[] = {"TF1706", "zn1705", "cs1801", "CF705"}; // è¡Œæƒ…åˆçº¦ä»£ç åˆ—è¡¨ï¼Œä¸­ã€ä¸Šã€å¤§ã€éƒ‘äº¤æ˜“æ‰€å„é€‰ä¸€ç§
+int instrumentNum = 4;                                             // è¡Œæƒ…åˆçº¦è®¢é˜…æ•°é‡
+unordered_map<string, TickToKlineHelper> g_KlineHash;              // ä¸åŒåˆçº¦çš„kçº¿å­˜å‚¨è¡¨
 
-// ½»Ò×²ÎÊı
-CThostFtdcTraderApi *g_pTradeUserApi = nullptr;                    // ½»Ò×Ö¸Õë
-char gTradeFrontAddr[] = "tcp://180.168.146.187:10001";            // Ä£Äâ½»Ò×Ç°ÖÃµØÖ·
-TThostFtdcInstrumentIDType g_pTradeInstrumentID = "zn1705";        // Ëù½»Ò×µÄºÏÔ¼´úÂë
-TThostFtdcDirectionType gTradeDirection = THOST_FTDC_D_Sell;       // ÂòÂô·½Ïò
-TThostFtdcPriceType gLimitPrice = 22735;                           // ½»Ò×¼Û¸ñ
+// äº¤æ˜“å‚æ•°
+CThostFtdcTraderApi *g_pTradeUserApi = nullptr;                    // äº¤æ˜“æŒ‡é’ˆ
+char gTradeFrontAddr[] = "tcp://180.168.146.187:10001";            // æ¨¡æ‹Ÿäº¤æ˜“å‰ç½®åœ°å€
+TThostFtdcInstrumentIDType g_pTradeInstrumentID = "zn1705";        // æ‰€äº¤æ˜“çš„åˆçº¦ä»£ç 
+TThostFtdcDirectionType gTradeDirection = THOST_FTDC_D_Sell;       // ä¹°å–æ–¹å‘
+TThostFtdcPriceType gLimitPrice = 22735;                           // äº¤æ˜“ä»·æ ¼
 
 int main()
 {
-	// ÕËºÅÃÜÂë
-	cout << "ÇëÊäÈëÕËºÅ£º ";
+	// è´¦å·å¯†ç 
+	cout << "è¯·è¾“å…¥è´¦å·ï¼š ";
 	scanf("%s", gInvesterID);
-	cout << "ÇëÊäÈëÃÜÂë£º ";
+	cout << "è¯·è¾“å…¥å¯†ç ï¼š ";
 	scanf("%s", gInvesterPassword);
 
-	// ³õÊ¼»¯ĞĞÇéÏß³Ì
-	cout << "³õÊ¼»¯ĞĞÇé..." << endl;
-	g_pMdUserApi = CThostFtdcMdApi::CreateFtdcMdApi();   // ´´½¨ĞĞÇéÊµÀı
-	CThostFtdcMdSpi *pMdUserSpi = new CustomMdSpi;       // ´´½¨ĞĞÇé»Øµ÷ÊµÀı
-	g_pMdUserApi->RegisterSpi(pMdUserSpi);               // ×¢²áÊÂ¼şÀà
-	g_pMdUserApi->RegisterFront(gMdFrontAddr);           // ÉèÖÃĞĞÇéÇ°ÖÃµØÖ·
-	g_pMdUserApi->Init();                                // Á¬½ÓÔËĞĞ
+	// åˆå§‹åŒ–è¡Œæƒ…çº¿ç¨‹
+	cout << "åˆå§‹åŒ–è¡Œæƒ…..." << endl;
+	g_pMdUserApi = CThostFtdcMdApi::CreateFtdcMdApi();   // åˆ›å»ºè¡Œæƒ…å®ä¾‹
+	CThostFtdcMdSpi *pMdUserSpi = new CustomMdSpi;       // åˆ›å»ºè¡Œæƒ…å›è°ƒå®ä¾‹
+	g_pMdUserApi->RegisterSpi(pMdUserSpi);               // æ³¨å†Œäº‹ä»¶ç±»
+	g_pMdUserApi->RegisterFront(gMdFrontAddr);           // è®¾ç½®è¡Œæƒ…å‰ç½®åœ°å€
+	g_pMdUserApi->Init();                                // è¿æ¥è¿è¡Œ
 	
 
 
-	// ³õÊ¼»¯½»Ò×Ïß³Ì
-	cout << "³õÊ¼»¯½»Ò×..." << endl;
-	g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(); // ´´½¨½»Ò×ÊµÀı
+	// åˆå§‹åŒ–äº¤æ˜“çº¿ç¨‹
+	cout << "åˆå§‹åŒ–äº¤æ˜“..." << endl;
+	g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(); // åˆ›å»ºäº¤æ˜“å®ä¾‹
 	//CThostFtdcTraderSpi *pTradeSpi = new CustomTradeSpi;
-	CustomTradeSpi *pTradeSpi = new CustomTradeSpi;               // ´´½¨½»Ò×»Øµ÷ÊµÀı
-	g_pTradeUserApi->RegisterSpi(pTradeSpi);                      // ×¢²áÊÂ¼şÀà
-	g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);    // ¶©ÔÄ¹«¹²Á÷
-	g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);   // ¶©ÔÄË½ÓĞÁ÷
-	g_pTradeUserApi->RegisterFront(gTradeFrontAddr);              // ÉèÖÃ½»Ò×Ç°ÖÃµØÖ·
-	g_pTradeUserApi->Init();                                      // Á¬½ÓÔËĞĞ
+	CustomTradeSpi *pTradeSpi = new CustomTradeSpi;               // åˆ›å»ºäº¤æ˜“å›è°ƒå®ä¾‹
+	g_pTradeUserApi->RegisterSpi(pTradeSpi);                      // æ³¨å†Œäº‹ä»¶ç±»
+	g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);    // è®¢é˜…å…¬å…±æµ
+	g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);   // è®¢é˜…ç§æœ‰æµ
+	g_pTradeUserApi->RegisterFront(gTradeFrontAddr);              // è®¾ç½®äº¤æ˜“å‰ç½®åœ°å€
+	g_pTradeUserApi->Init();                                      // è¿æ¥è¿è¡Œ
 		
 
-	// µÈµ½Ïß³ÌÍË³ö
+	// ç­‰åˆ°çº¿ç¨‹é€€å‡º
 	g_pMdUserApi->Join();
 	delete pMdUserSpi;
 	g_pMdUserApi->Release();
@@ -71,7 +71,7 @@ int main()
 	delete pTradeSpi;
 	g_pTradeUserApi->Release();
 
-	// ×ª»»±¾µØkÏßÊı¾İ
+	// è½¬æ¢æœ¬åœ°kçº¿æ•°æ®
 	//TickToKlineHelper tickToKlineHelper;
 	//tickToKlineHelper.KLineFromLocalData("market_data.csv", "K_line_data.csv");
 	

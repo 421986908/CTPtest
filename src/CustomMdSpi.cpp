@@ -1,53 +1,53 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <fstream>
 #include <unordered_map>
 #include "CustomMdSpi.h"
 #include "TickToKlineHelper.h"
 
-// ---- È«¾Ö²ÎÊıÉùÃ÷ ---- //
-extern CThostFtdcMdApi *g_pMdUserApi;            // ĞĞÇéÖ¸Õë
-extern char gMdFrontAddr[];                      // Ä£ÄâĞĞÇéÇ°ÖÃµØÖ·
-extern TThostFtdcBrokerIDType gBrokerID;         // Ä£Äâ¾­¼ÍÉÌ´úÂë
-extern TThostFtdcInvestorIDType gInvesterID;     // Í¶×ÊÕßÕË»§Ãû
-extern TThostFtdcPasswordType gInvesterPassword; // Í¶×ÊÕßÃÜÂë
-extern char *g_pInstrumentID[];                  // ĞĞÇéºÏÔ¼´úÂëÁĞ±í£¬ÖĞ¡¢ÉÏ¡¢´ó¡¢Ö£½»Ò×Ëù¸÷Ñ¡Ò»ÖÖ
-extern int instrumentNum;                        // ĞĞÇéºÏÔ¼¶©ÔÄÊıÁ¿
-extern std::unordered_map<std::string, TickToKlineHelper> g_KlineHash; // kÏß´æ´¢±í
+// ---- å…¨å±€å‚æ•°å£°æ˜ ---- //
+extern CThostFtdcMdApi *g_pMdUserApi;            // è¡Œæƒ…æŒ‡é’ˆ
+extern char gMdFrontAddr[];                      // æ¨¡æ‹Ÿè¡Œæƒ…å‰ç½®åœ°å€
+extern TThostFtdcBrokerIDType gBrokerID;         // æ¨¡æ‹Ÿç»çºªå•†ä»£ç 
+extern TThostFtdcInvestorIDType gInvesterID;     // æŠ•èµ„è€…è´¦æˆ·å
+extern TThostFtdcPasswordType gInvesterPassword; // æŠ•èµ„è€…å¯†ç 
+extern const char *g_pInstrumentID[];                  // è¡Œæƒ…åˆçº¦ä»£ç åˆ—è¡¨ï¼Œä¸­ã€ä¸Šã€å¤§ã€éƒ‘äº¤æ˜“æ‰€å„é€‰ä¸€ç§
+extern int instrumentNum;                        // è¡Œæƒ…åˆçº¦è®¢é˜…æ•°é‡
+extern std::unordered_map<std::string, TickToKlineHelper> g_KlineHash; // kçº¿å­˜å‚¨è¡¨
 
-// ---- ctp_api»Øµ÷º¯Êı ---- //
-// Á¬½Ó³É¹¦Ó¦´ğ
+// ---- ctp_apiå›è°ƒå‡½æ•° ---- //
+// è¿æ¥æˆåŠŸåº”ç­”
 void CustomMdSpi::OnFrontConnected()
 {
-	std::cout << "=====½¨Á¢ÍøÂçÁ¬½Ó³É¹¦=====" << std::endl;
-	// ¿ªÊ¼µÇÂ¼
+	std::cout << "=====å»ºç«‹ç½‘ç»œè¿æ¥æˆåŠŸ=====" << std::endl;
+	// å¼€å§‹ç™»å½•
 	CThostFtdcReqUserLoginField loginReq;
 	memset(&loginReq, 0, sizeof(loginReq));
 	strcpy(loginReq.BrokerID, gBrokerID);
 	strcpy(loginReq.UserID, gInvesterID);
 	strcpy(loginReq.Password, gInvesterPassword);
-	static int requestID = 0; // ÇëÇó±àºÅ
+	static int requestID = 0; // è¯·æ±‚ç¼–å·
 	int rt = g_pMdUserApi->ReqUserLogin(&loginReq, requestID);
 	if (!rt)
-		std::cout << ">>>>>>·¢ËÍµÇÂ¼ÇëÇó³É¹¦" << std::endl;
+		std::cout << ">>>>>>å‘é€ç™»å½•è¯·æ±‚æˆåŠŸ" << std::endl;
 	else
-		std::cerr << "--->>>·¢ËÍµÇÂ¼ÇëÇóÊ§°Ü" << std::endl;
+		std::cerr << "--->>>å‘é€ç™»å½•è¯·æ±‚å¤±è´¥" << std::endl;
 }
 
-// ¶Ï¿ªÁ¬½ÓÍ¨Öª
+// æ–­å¼€è¿æ¥é€šçŸ¥
 void CustomMdSpi::OnFrontDisconnected(int nReason)
 {
-	std::cerr << "=====ÍøÂçÁ¬½Ó¶Ï¿ª=====" << std::endl;
-	std::cerr << "´íÎóÂë£º " << nReason << std::endl;
+	std::cerr << "=====ç½‘ç»œè¿æ¥æ–­å¼€=====" << std::endl;
+	std::cerr << "é”™è¯¯ç ï¼š " << nReason << std::endl;
 }
 
-// ĞÄÌø³¬Ê±¾¯¸æ
+// å¿ƒè·³è¶…æ—¶è­¦å‘Š
 void CustomMdSpi::OnHeartBeatWarning(int nTimeLapse)
 {
-	std::cerr << "=====ÍøÂçĞÄÌø³¬Ê±=====" << std::endl;
-	std::cerr << "¾àÉÏ´ÎÁ¬½ÓÊ±¼ä£º " << nTimeLapse << std::endl;
+	std::cerr << "=====ç½‘ç»œå¿ƒè·³è¶…æ—¶=====" << std::endl;
+	std::cerr << "è·ä¸Šæ¬¡è¿æ¥æ—¶é—´ï¼š " << nTimeLapse << std::endl;
 }
 
-// µÇÂ¼Ó¦´ğ
+// ç™»å½•åº”ç­”
 void CustomMdSpi::OnRspUserLogin(
 	CThostFtdcRspUserLoginField *pRspUserLogin, 
 	CThostFtdcRspInfoField *pRspInfo, 
@@ -57,23 +57,23 @@ void CustomMdSpi::OnRspUserLogin(
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (!bResult)
 	{
-		std::cout << "=====ÕË»§µÇÂ¼³É¹¦=====" << std::endl;
-		std::cout << "½»Ò×ÈÕ£º " << pRspUserLogin->TradingDay << std::endl;
-		std::cout << "µÇÂ¼Ê±¼ä£º " << pRspUserLogin->LoginTime << std::endl;
-		std::cout << "¾­¼ÍÉÌ£º " << pRspUserLogin->BrokerID << std::endl;
-		std::cout << "ÕÊ»§Ãû£º " << pRspUserLogin->UserID << std::endl;
-		// ¿ªÊ¼¶©ÔÄĞĞÇé
-		int rt = g_pMdUserApi->SubscribeMarketData(g_pInstrumentID, instrumentNum);
+		std::cout << "=====è´¦æˆ·ç™»å½•æˆåŠŸ=====" << std::endl;
+		std::cout << "äº¤æ˜“æ—¥ï¼š " << pRspUserLogin->TradingDay << std::endl;
+		std::cout << "ç™»å½•æ—¶é—´ï¼š " << pRspUserLogin->LoginTime << std::endl;
+		std::cout << "ç»çºªå•†ï¼š " << pRspUserLogin->BrokerID << std::endl;
+		std::cout << "å¸æˆ·åï¼š " << pRspUserLogin->UserID << std::endl;
+		// å¼€å§‹è®¢é˜…è¡Œæƒ…
+		int rt = g_pMdUserApi->SubscribeMarketData((char**)g_pInstrumentID, instrumentNum);
 		if (!rt)
-			std::cout << ">>>>>>·¢ËÍ¶©ÔÄĞĞÇéÇëÇó³É¹¦" << std::endl;
+			std::cout << ">>>>>>å‘é€è®¢é˜…è¡Œæƒ…è¯·æ±‚æˆåŠŸ" << std::endl;
 		else
-			std::cerr << "--->>>·¢ËÍ¶©ÔÄĞĞÇéÇëÇóÊ§°Ü" << std::endl;
+			std::cerr << "--->>>å‘é€è®¢é˜…è¡Œæƒ…è¯·æ±‚å¤±è´¥" << std::endl;
 	}
 	else
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// µÇ³öÓ¦´ğ
+// ç™»å‡ºåº”ç­”
 void CustomMdSpi::OnRspUserLogout(
 	CThostFtdcUserLogoutField *pUserLogout,
 	CThostFtdcRspInfoField *pRspInfo, 
@@ -83,23 +83,23 @@ void CustomMdSpi::OnRspUserLogout(
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (!bResult)
 	{
-		std::cout << "=====ÕË»§µÇ³ö³É¹¦=====" << std::endl;
-		std::cout << "¾­¼ÍÉÌ£º " << pUserLogout->BrokerID << std::endl;
-		std::cout << "ÕÊ»§Ãû£º " << pUserLogout->UserID << std::endl;
+		std::cout << "=====è´¦æˆ·ç™»å‡ºæˆåŠŸ=====" << std::endl;
+		std::cout << "ç»çºªå•†ï¼š " << pUserLogout->BrokerID << std::endl;
+		std::cout << "å¸æˆ·åï¼š " << pUserLogout->UserID << std::endl;
 	}
 	else
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// ´íÎóÍ¨Öª
+// é”™è¯¯é€šçŸ¥
 void CustomMdSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (bResult)
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// ¶©ÔÄĞĞÇéÓ¦´ğ
+// è®¢é˜…è¡Œæƒ…åº”ç­”
 void CustomMdSpi::OnRspSubMarketData(
 	CThostFtdcSpecificInstrumentField *pSpecificInstrument, 
 	CThostFtdcRspInfoField *pRspInfo, 
@@ -109,31 +109,31 @@ void CustomMdSpi::OnRspSubMarketData(
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (!bResult)
 	{
-		std::cout << "=====¶©ÔÄĞĞÇé³É¹¦=====" << std::endl;
-		std::cout << "ºÏÔ¼´úÂë£º " << pSpecificInstrument->InstrumentID << std::endl;
-		// Èç¹ûĞèÒª´æÈëÎÄ¼ş»òÕßÊı¾İ¿â£¬ÔÚÕâÀï´´½¨±íÍ·,²»Í¬µÄºÏÔ¼µ¥¶À´æ´¢
+		std::cout << "=====è®¢é˜…è¡Œæƒ…æˆåŠŸ=====" << std::endl;
+		std::cout << "åˆçº¦ä»£ç ï¼š " << pSpecificInstrument->InstrumentID << std::endl;
+		// å¦‚æœéœ€è¦å­˜å…¥æ–‡ä»¶æˆ–è€…æ•°æ®åº“ï¼Œåœ¨è¿™é‡Œåˆ›å»ºè¡¨å¤´,ä¸åŒçš„åˆçº¦å•ç‹¬å­˜å‚¨
 		char filePath[100] = {'\0'};
 		sprintf(filePath, "%s_market_data.csv", pSpecificInstrument->InstrumentID);
 		std::ofstream outFile;
-		outFile.open(filePath, std::ios::out); // ĞÂ¿ªÎÄ¼ş
-		outFile << "ºÏÔ¼´úÂë" << ","
-			<< "¸üĞÂÊ±¼ä" << ","
-			<< "×îĞÂ¼Û" << ","
-			<< "³É½»Á¿" << ","
-			<< "Âò¼ÛÒ»" << ","
-			<< "ÂòÁ¿Ò»" << ","
-			<< "Âô¼ÛÒ»" << ","
-			<< "ÂôÁ¿Ò»" << ","
-			<< "³Ö²ÖÁ¿" << ","
-			<< "»»ÊÖÂÊ"
+		outFile.open(filePath, std::ios::out); // æ–°å¼€æ–‡ä»¶
+		outFile << "åˆçº¦ä»£ç " << ","
+			<< "æ›´æ–°æ—¶é—´" << ","
+			<< "æœ€æ–°ä»·" << ","
+			<< "æˆäº¤é‡" << ","
+			<< "ä¹°ä»·ä¸€" << ","
+			<< "ä¹°é‡ä¸€" << ","
+			<< "å–ä»·ä¸€" << ","
+			<< "å–é‡ä¸€" << ","
+			<< "æŒä»“é‡" << ","
+			<< "æ¢æ‰‹ç‡"
 			<< std::endl;
 		outFile.close();
 	}
 	else
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// È¡Ïû¶©ÔÄĞĞÇéÓ¦´ğ
+// å–æ¶ˆè®¢é˜…è¡Œæƒ…åº”ç­”
 void CustomMdSpi::OnRspUnSubMarketData(
 	CThostFtdcSpecificInstrumentField *pSpecificInstrument, 
 	CThostFtdcRspInfoField *pRspInfo,
@@ -143,14 +143,14 @@ void CustomMdSpi::OnRspUnSubMarketData(
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (!bResult)
 	{
-		std::cout << "=====È¡Ïû¶©ÔÄĞĞÇé³É¹¦=====" << std::endl;
-		std::cout << "ºÏÔ¼´úÂë£º " << pSpecificInstrument->InstrumentID << std::endl;
+		std::cout << "=====å–æ¶ˆè®¢é˜…è¡Œæƒ…æˆåŠŸ=====" << std::endl;
+		std::cout << "åˆçº¦ä»£ç ï¼š " << pSpecificInstrument->InstrumentID << std::endl;
 	}
 	else
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// ¶©ÔÄÑ¯¼ÛÓ¦´ğ
+// è®¢é˜…è¯¢ä»·åº”ç­”
 void CustomMdSpi::OnRspSubForQuoteRsp(
 	CThostFtdcSpecificInstrumentField *pSpecificInstrument,
 	CThostFtdcRspInfoField *pRspInfo,
@@ -160,42 +160,42 @@ void CustomMdSpi::OnRspSubForQuoteRsp(
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (!bResult)
 	{
-		std::cout << "=====¶©ÔÄÑ¯¼Û³É¹¦=====" << std::endl;
-		std::cout << "ºÏÔ¼´úÂë£º " << pSpecificInstrument->InstrumentID << std::endl;
+		std::cout << "=====è®¢é˜…è¯¢ä»·æˆåŠŸ=====" << std::endl;
+		std::cout << "åˆçº¦ä»£ç ï¼š " << pSpecificInstrument->InstrumentID << std::endl;
 	}
 	else
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// È¡Ïû¶©ÔÄÑ¯¼ÛÓ¦´ğ
+// å–æ¶ˆè®¢é˜…è¯¢ä»·åº”ç­”
 void CustomMdSpi::OnRspUnSubForQuoteRsp(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
 	bool bResult = pRspInfo && (pRspInfo->ErrorID != 0);
 	if (!bResult)
 	{
-		std::cout << "=====È¡Ïû¶©ÔÄÑ¯¼Û³É¹¦=====" << std::endl;
-		std::cout << "ºÏÔ¼´úÂë£º " << pSpecificInstrument->InstrumentID << std::endl;
+		std::cout << "=====å–æ¶ˆè®¢é˜…è¯¢ä»·æˆåŠŸ=====" << std::endl;
+		std::cout << "åˆçº¦ä»£ç ï¼š " << pSpecificInstrument->InstrumentID << std::endl;
 	}
 	else
-		std::cerr << "·µ»Ø´íÎó--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
+		std::cerr << "è¿”å›é”™è¯¯--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
 }
 
-// ĞĞÇéÏêÇéÍ¨Öª
+// è¡Œæƒ…è¯¦æƒ…é€šçŸ¥
 void CustomMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
-	// ´òÓ¡ĞĞÇé£¬×Ö¶Î½Ï¶à£¬½ØÈ¡²¿·Ö
-	std::cout << "=====»ñµÃÉî¶ÈĞĞÇé=====" << std::endl;
-	std::cout << "½»Ò×ÈÕ£º " << pDepthMarketData->TradingDay << std::endl;
-	std::cout << "½»Ò×Ëù´úÂë£º " << pDepthMarketData->ExchangeID << std::endl;
-	std::cout << "ºÏÔ¼´úÂë£º " << pDepthMarketData->InstrumentID << std::endl;
-	std::cout << "ºÏÔ¼ÔÚ½»Ò×ËùµÄ´úÂë£º " << pDepthMarketData->ExchangeInstID << std::endl;
-	std::cout << "×îĞÂ¼Û£º " << pDepthMarketData->LastPrice << std::endl;
-	std::cout << "ÊıÁ¿£º " << pDepthMarketData->Volume << std::endl;
-	// Èç¹ûÖ»»ñÈ¡Ä³Ò»¸öºÏÔ¼ĞĞÇé£¬¿ÉÒÔÖğtickµØ´æÈëÎÄ¼ş»òÊı¾İ¿â
+	// æ‰“å°è¡Œæƒ…ï¼Œå­—æ®µè¾ƒå¤šï¼Œæˆªå–éƒ¨åˆ†
+	std::cout << "=====è·å¾—æ·±åº¦è¡Œæƒ…=====" << std::endl;
+	std::cout << "äº¤æ˜“æ—¥ï¼š " << pDepthMarketData->TradingDay << std::endl;
+	std::cout << "äº¤æ˜“æ‰€ä»£ç ï¼š " << pDepthMarketData->ExchangeID << std::endl;
+	std::cout << "åˆçº¦ä»£ç ï¼š " << pDepthMarketData->InstrumentID << std::endl;
+	std::cout << "åˆçº¦åœ¨äº¤æ˜“æ‰€çš„ä»£ç ï¼š " << pDepthMarketData->ExchangeInstID << std::endl;
+	std::cout << "æœ€æ–°ä»·ï¼š " << pDepthMarketData->LastPrice << std::endl;
+	std::cout << "æ•°é‡ï¼š " << pDepthMarketData->Volume << std::endl;
+	// å¦‚æœåªè·å–æŸä¸€ä¸ªåˆçº¦è¡Œæƒ…ï¼Œå¯ä»¥é€tickåœ°å­˜å…¥æ–‡ä»¶æˆ–æ•°æ®åº“
 	char filePath[100] = {'\0'};
 	sprintf(filePath, "%s_market_data.csv", pDepthMarketData->InstrumentID);
 	std::ofstream outFile;
-	outFile.open(filePath, std::ios::app); // ÎÄ¼ş×·¼ÓĞ´Èë 
+	outFile.open(filePath, std::ios::app); // æ–‡ä»¶è¿½åŠ å†™å…¥ 
 	outFile << pDepthMarketData->InstrumentID << "," 
 		<< pDepthMarketData->UpdateTime << "." << pDepthMarketData->UpdateMillisec << "," 
 		<< pDepthMarketData->LastPrice << "," 
@@ -208,28 +208,28 @@ void CustomMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMar
 		<< pDepthMarketData->Turnover << std::endl;
 	outFile.close();
 
-	// ¼ÆËãÊµÊ±kÏß
+	// è®¡ç®—å®æ—¶kçº¿
 	std::string instrumentKey = std::string(pDepthMarketData->InstrumentID);
 	if (g_KlineHash.find(instrumentKey) == g_KlineHash.end())
 		g_KlineHash[instrumentKey] = TickToKlineHelper();
 	g_KlineHash[instrumentKey].KLineFromRealtimeData(pDepthMarketData);
 
 
-	// È¡Ïû¶©ÔÄĞĞÇé
+	// å–æ¶ˆè®¢é˜…è¡Œæƒ…
 	//int rt = g_pMdUserApi->UnSubscribeMarketData(g_pInstrumentID, instrumentNum);
 	//if (!rt)
-	//	std::cout << ">>>>>>·¢ËÍÈ¡Ïû¶©ÔÄĞĞÇéÇëÇó³É¹¦" << std::endl;
+	//	std::cout << ">>>>>>å‘é€å–æ¶ˆè®¢é˜…è¡Œæƒ…è¯·æ±‚æˆåŠŸ" << std::endl;
 	//else
-	//	std::cerr << "--->>>·¢ËÍÈ¡Ïû¶©ÔÄĞĞÇéÇëÇóÊ§°Ü" << std::endl;
+	//	std::cerr << "--->>>å‘é€å–æ¶ˆè®¢é˜…è¡Œæƒ…è¯·æ±‚å¤±è´¥" << std::endl;
 }
 
-// Ñ¯¼ÛÏêÇéÍ¨Öª
+// è¯¢ä»·è¯¦æƒ…é€šçŸ¥
 void CustomMdSpi::OnRtnForQuoteRsp(CThostFtdcForQuoteRspField *pForQuoteRsp)
 {
-	// ²¿·ÖÑ¯¼Û½á¹û
-	std::cout << "=====»ñµÃÑ¯¼Û½á¹û=====" << std::endl;
-	std::cout << "½»Ò×ÈÕ£º " << pForQuoteRsp->TradingDay << std::endl;
-	std::cout << "½»Ò×Ëù´úÂë£º " << pForQuoteRsp->ExchangeID << std::endl;
-	std::cout << "ºÏÔ¼´úÂë£º " << pForQuoteRsp->InstrumentID << std::endl;
-	std::cout << "Ñ¯¼Û±àºÅ£º " << pForQuoteRsp->ForQuoteSysID << std::endl;
+	// éƒ¨åˆ†è¯¢ä»·ç»“æœ
+	std::cout << "=====è·å¾—è¯¢ä»·ç»“æœ=====" << std::endl;
+	std::cout << "äº¤æ˜“æ—¥ï¼š " << pForQuoteRsp->TradingDay << std::endl;
+	std::cout << "äº¤æ˜“æ‰€ä»£ç ï¼š " << pForQuoteRsp->ExchangeID << std::endl;
+	std::cout << "åˆçº¦ä»£ç ï¼š " << pForQuoteRsp->InstrumentID << std::endl;
+	std::cout << "è¯¢ä»·ç¼–å·ï¼š " << pForQuoteRsp->ForQuoteSysID << std::endl;
 }
