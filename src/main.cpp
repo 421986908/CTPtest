@@ -8,10 +8,6 @@
 
 using namespace std;
 
-// 链接库
-#pragma comment (lib, "thostmduserapi.lib")
-#pragma comment (lib, "thosttraderapi.lib")
-
 // ---- 全局变量 ---- //
 // 公共参数
 TThostFtdcBrokerIDType gBrokerID = "9999";                         // 模拟经纪商代码
@@ -21,7 +17,7 @@ TThostFtdcPasswordType gInvesterPassword = "";                     // 投资者�
 // 行情参数
 CThostFtdcMdApi *g_pMdUserApi = nullptr;                           // 行情指针
 char gMdFrontAddr[] = "tcp://180.168.146.187:10010";               // 模拟行情前置地址
-const char *g_pInstrumentID[] = {"TF1706", "zn1705", "cs1801", "CF705"}; // 行情合约代码列表，中、上、大、郑交易所各选一种
+const char *g_pInstrumentID[] = {"TF1901", "zn1901", "cs1901", "CF905"}; // 行情合约代码列表，中、上、大、郑交易所各选一种
 int instrumentNum = 4;                                             // 行情合约订阅数量
 unordered_map<string, TickToKlineHelper> g_KlineHash;              // 不同合约的k线存储表
 
@@ -36,9 +32,11 @@ int main()
 {
 	// 账号密码
 	cout << "请输入账号： ";
-	scanf("%s", gInvesterID);
+	//scanf("%s", gInvesterID);
+	sprintf(gInvesterID, "111269");
 	cout << "请输入密码： ";
-	scanf("%s", gInvesterPassword);
+	//scanf("%s", gInvesterPassword);
+	sprintf(gInvesterPassword, "123456");
 
 	// 初始化行情线程
 	cout << "初始化行情..." << endl;
@@ -50,16 +48,16 @@ int main()
 	
 
 
-	// 初始化交易线程
-	cout << "初始化交易..." << endl;
-	g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(); // 创建交易实例
-	//CThostFtdcTraderSpi *pTradeSpi = new CustomTradeSpi;
-	CustomTradeSpi *pTradeSpi = new CustomTradeSpi;               // 创建交易回调实例
-	g_pTradeUserApi->RegisterSpi(pTradeSpi);                      // 注册事件类
-	g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);    // 订阅公共流
-	g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);   // 订阅私有流
-	g_pTradeUserApi->RegisterFront(gTradeFrontAddr);              // 设置交易前置地址
-	g_pTradeUserApi->Init();                                      // 连接运行
+	//// 初始化交易线程
+	//cout << "初始化交易..." << endl;
+	//g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(); // 创建交易实例
+	////CThostFtdcTraderSpi *pTradeSpi = new CustomTradeSpi;
+	//CustomTradeSpi *pTradeSpi = new CustomTradeSpi;               // 创建交易回调实例
+	//g_pTradeUserApi->RegisterSpi(pTradeSpi);                      // 注册事件类
+	//g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);    // 订阅公共流
+	//g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);   // 订阅私有流
+	//g_pTradeUserApi->RegisterFront(gTradeFrontAddr);              // 设置交易前置地址
+	//g_pTradeUserApi->Init();                                      // 连接运行
 		
 
 	// 等到线程退出
@@ -67,9 +65,9 @@ int main()
 	delete pMdUserSpi;
 	g_pMdUserApi->Release();
 
-	g_pTradeUserApi->Join();
-	delete pTradeSpi;
-	g_pTradeUserApi->Release();
+	//g_pTradeUserApi->Join();
+	//delete pTradeSpi;
+	//g_pTradeUserApi->Release();
 
 	// 转换本地k线数据
 	//TickToKlineHelper tickToKlineHelper;

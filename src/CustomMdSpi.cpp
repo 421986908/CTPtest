@@ -63,7 +63,10 @@ void CustomMdSpi::OnRspUserLogin(
 		std::cout << "经纪商： " << pRspUserLogin->BrokerID << std::endl;
 		std::cout << "帐户名： " << pRspUserLogin->UserID << std::endl;
 		// 开始订阅行情
-		int rt = g_pMdUserApi->SubscribeMarketData((char**)g_pInstrumentID, instrumentNum);
+		char * temp[1];
+		char temp2[20] = "RB1901";
+		temp[0] = temp2;
+		int rt = g_pMdUserApi->SubscribeMarketData(temp, 1);
 		if (!rt)
 			std::cout << ">>>>>>发送订阅行情请求成功" << std::endl;
 		else
